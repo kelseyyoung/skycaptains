@@ -6,7 +6,7 @@
   }
   $error = array();
   if (isset($_POST['username'])) {
-    $db = new PDO("mysql:host=" . addslashes($dbhost) . ";dbname=" . $dbname, $dbuser, $dbpassword);
+    $db = new PDO("mysql:host=" . $dbhost . ";dbname=" . $dbname, $dbuser, $dbpassword);
 
     $s = $db->prepare('select * from users where username=:username');
     $s->execute(array(':username' => $_POST['username']));
@@ -29,17 +29,29 @@
     <title><?php echo $title; ?> - Login</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Jura:400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/skycaptains.css">
+    <link rel="shortcut icon" href="img/favicon.ico">
     <style>
+      h4 {
+	color: black !important;
+      }
       a {
 	color: white;
+      }
+      body {
+	padding-top: 100px;
+      }
+      h1 {
+	font-size: 50px;
       }
     </style>
   </head>
   <body>
     <div class="container-fluid">
       <div class="row-fluid">
-	<h1 class="text-center">SkyCaptains</h1>
 	<div class="span6 offset3 well">
+	  <h1 class="text-center">SkyCaptains</h1>
 	  <form class="form-horizontal" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
 	    <div class="control-group">
 	      <label for="username" class="control-label">Username</label>
@@ -54,7 +66,7 @@
 	      </div>
 	    </div>
 	    <div class="form-actions">
-	      <button type="submit" class="btn btn-primary">Login</button>
+	      <button type="submit" class="btn btn-large">Login</button>
 	    </div>
 	  </form>
 	  <?php if (isset($error["message"])) { ?>
@@ -62,9 +74,12 @@
 	    <p><?php echo $error["message"]; ?></p>
 	  </div>
 	  <?php } ?>
-	  <div class="alert alert-info">
-	    <h4>Don't have an account?</h4>
-	    <p>Get one <a href="register.php">here</a></p>
+	</div>
+      </div>
+      <div class="row-fluid">
+	<div class="span6 offset3">
+	  <div class="alert alert-success">
+	    <h4>Don't have an account? Click <a href="register.php">here</a> to register.</h4>
 	  </div>
 	</div>
       </div>

@@ -87,6 +87,7 @@ class SkyCaptainsGame():
     self.user1_ready = False
     self.user2_ready = False
     self.id = id 
+    self.winner = None
 
   def to_dict(self):
     ret = {}
@@ -146,6 +147,19 @@ class SkyCaptainsGame():
   def generate_medicine(self):
     self.medicines.append(Medicine())
 
+  def is_over(self):
+    if self.plane_1.health <= 0:
+      self.winner = 2
+      return True
+    elif self.plane_2.health <= 0:
+      self.winner = 1
+      return True
+    else:
+      return False
+
+  def get_winner(self):
+    return self.winner 
+
 #SkyCaptains Server handler (essentially)
 class SkyCaptainsClient(WampClientProtocol):
 
@@ -189,8 +203,14 @@ class SkyCaptainsClient(WampClientProtocol):
       self.games[game_id].generate_medicine()
     elif type == "update":
       self.games[game_id].update()
-      self.publish("http://skycaptains.com/event#" + game_id, {"to": "client",
-	"game" : json.dumps(self.games[game_id].to_dict())})
+      if not self.games[game_id].is_over():
+	self.publish("http://skycaptains.com/event#" + game_id, {"to": "client",
+	  "game" : json.dumps(self.games[game_id].to_dict())})
+      else:
+	self.publish("http://skycaptains.com/event#" + game_id, {"to": "client",
+	  "type": "game over", "winner": self.games[game_id].get_winner()})
+	#Delete game from games
+	del self.games[game_id]
   
 #SkyCaptains Server
 class SkyCaptainsServer(WampServerProtocol):

@@ -29,10 +29,10 @@
     <title><?php echo $title; ?></title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Jura:400,600">
+    <link rel="stylesheet" href="css/skycaptains.css">
+    <link rel="shortcut icon" href="img/favicon.ico">
     <style>
-      body {
-	padding: 8px;
-      }
     </style>
   </head>
   <body>
@@ -104,7 +104,8 @@
     var uuid = "<?php echo $game['uuid']; ?>";
     var keysDown = {};
     var ready = false;
-    var count = 0;
+    var updateInterval;
+    var medTimeout;
 
     function generateMedicine() {
       sess.publish("http://skycaptains.com/event#" + uuid,
@@ -112,7 +113,7 @@
 	"id" : uuid,
 	"type" : "medicine"}); 
       //Generate medicine in next 1 - 10 seconds
-      setTimeout(generateMedicine, Math.floor((Math.random() * 10000) + 1000));
+      medTimeout = setTimeout(generateMedicine, Math.floor((Math.random() * 10000) + 1000));
     }
 
     function onMessageRecv(topicUri, event) {
@@ -126,14 +127,23 @@
 	  $("#score-row").show();
 	  if (myPlane == 1) {
 	    //Player 1 sets update interval
-	    setInterval(function() { sess.publish("http://skycaptains.com/event#" + uuid, {"to" : "server", "id" : uuid, "type" : "update"}); }, 10);
+	    updateInterval = setInterval(function() { sess.publish("http://skycaptains.com/event#" + uuid, {"to" : "server", "id" : uuid, "type" : "update"}); }, 10);
 	    //Player 1 sets generate medicine timeout
-	    setTimeout(generateMedicine, Math.floor((Math.random() * 10000) + 1000));
+	    medTimeout = setTimeout(generateMedicine, Math.floor((Math.random() * 10000) + 1000));
 	  }
 	  //Both start updating
 	  setInterval(update, 10);
+	} else if (event["type"] && event["type"] == "game over") {
+	  if (myPlane == 1) {
+	    //Clear events
+	    clearInterval(updateInterval);
+	    clearTimeout(medTimeout)
+	    //Player 1 records game;
+	    $.post("recordgame.php", {"id" : uuid, "winner" : event["winner"]}, function(data) {
+	    });
+	  }
+	  window.location = "home.php";
 	} else {
-	  //console.log(event);
 	  render(event);
 	}
       }
@@ -218,47 +228,9 @@
 	canFire = false;
 	setTimeout(function() { canFire = true; }, 200);
       }
-
-      /*
-      //Update current bullets
-      for (var i = 0; i < game.bullets.length; i++) {
-	game.bullets[i].update();
-	if (game.bullets[i].x < 0 || game.bullets[i].x > canvasWidth) {
-	  game.remove_bullet(i);
-	} else if (game.bullets[i].type == 1 && detectCollision(game.plane2, game.bullets[i])) { 
-	  //Check to see if bullet from 1 hit 2
-	  game.plane2.health -= 5;
-	  game.remove_bullet(i);
-	} else if (game.bullets[i].type == 2 && detectCollision(game.plane1, game.bullets[i])) {
-	  //Check to see if bullet from 2 hit 1
-	  game.plane1.health -= 5;
-	  game.remove_bullet(i);
-	}
-      }
-      //Update current medicines
-      for (var i = 0; i < game.medicines.length; i++) {
-	game.medicines[i].update();
-	if (game.medicines[i].x < 0 || game.medicines[i].x > canvasWidth) {
-	  game.remove_medicine(i);
-	} else if (detectCollision(game.plane1, game.medicines[i])) {
-	  //Medicine hit plane1
-	  game.plane1.health += game.medicines[i].value;
-	  if (game.plane1.health > 100) { game.plane1.health = 100; }
-	} else if (detectCollision(game.plane2, game.medicines[i])) {
-	  //Medicine hit plane2
-	  game.plane2.health += game.medicines[i].value;
-	  if (game.plane2.health > 100) { game.plane2.health = 100; }
-	}
-      }
-      render();
-      */
     }
 
     var render = function(data) {
-      if (count == 0) {
-	console.log(data);
-	count++;
-      }
       data = $.parseJSON(data["game"]);
       var medicineData = data["medicines"];
       var bulletData = data["bullets"];
@@ -350,13 +322,12 @@
 	function(session) {
 	  //Session established
 	  sess = session;
-	  console.log("connected!");
 	  sess.subscribe("http://skycaptains.com/event#" + uuid, onMessageRecv);
 	  sess.publish("http://skycaptains.com/game", {"to" : "server", "id" : uuid, "user" : myPlane});
 	}, 
 	function (code, reason) {
-	  console.log("connection lost");
 	  //Connection lost
+	  //TODO: redirect to error page
 	  sess = null;
 	}
       );

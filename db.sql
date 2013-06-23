@@ -8,5 +8,6 @@ create table games (
   user1 VARCHAR(20),
   user2 VARCHAR(20),
   uuid VARCHAR(64) PRIMARY KEY,
-  winner VARCHAR(20)
+  winner VARCHAR(20),
+  completed DATETIME DEFAULT NULL
 );

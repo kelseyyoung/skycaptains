@@ -40,12 +40,23 @@
     <title><?php echo $title; ?> - Register</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link href="http://fonts.googleapis.com/css?family=Jura:400,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/skycaptains.css">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <style>
+      body {
+	padding-top: 100px;
+      }
+      h1 {
+	font-size: 40px;
+      }
+    </style>
   </head>
   <body>
     <div class="container-fluid">
       <div class="row-fluid">
-	<h1 class="text-center">Register</h1>
 	<div class="span6 offset3 well">
+	  <h1 class="text-center">SkyCaptains Registration</h1>
 	  <form class="form-horizontal" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
 	    <div class="control-group">
 	      <label for="username" class="control-label">Username</label>
@@ -57,6 +68,7 @@
 	      <label for="password" class="control-label">Password</label>
 	      <div class="controls">
 		<input type="password" id="password" name="password" />
+		<span class="help-block">Must be between 5 and 20 characters</span>
 	      </div>
 	    </div>
 	    <div class="control-group">
