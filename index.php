@@ -15,6 +15,8 @@
     $password = $row['password'];
     if (hash("sha256", $_POST['password'].$salt) === $password) {
       $_SESSION['username'] = $_POST['username'];
+      $s = $db->prepare("update users set loggedin=TRUE where username=:username");
+      $s->execute(array(":username" => $_POST['username']));
       header("Location: home.php");
     } else {
       $error["message"] = "That username or password is incorrect";

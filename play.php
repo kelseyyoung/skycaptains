@@ -327,7 +327,7 @@
 	}, 
 	function (code, reason) {
 	  //Connection lost
-	  //TODO: redirect to error page
+	  window.location("home.php");
 	  sess = null;
 	}
       );

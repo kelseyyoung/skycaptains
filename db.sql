@@ -1,7 +1,8 @@
 create table users (
   username VARCHAR(20) PRIMARY KEY,
   password VARCHAR(64),
-  salt VARCHAR(32)
+  salt VARCHAR(32),
+  loggedin BOOL DEFAULT FALSE
 );
 
 create table games (
