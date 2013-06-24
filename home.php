@@ -32,60 +32,7 @@
     <link rel="stylesheet" href="css/skycaptains.css">
     <link rel="shortcut icon" href="img/favicon.ico">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
-    <style>
-      .online {
-	color: green;
-      }
-      #chat-bar {
-	position: fixed;
-	bottom: 0px;
-	left: 0px;
-      }
-      #chat-box-trigger {
-	border: 1px solid #000;
-	background-color: white;
-	color: black;
-	margin-left: 0px;
-      }
-      #chat-box-trigger:hover {
-	background-color: #999;
-	cursor: pointer;
-      }
-      #chat-box {
-	margin-left: 0px;
-	height: 180px;
-	color: black;
-	padding: 3px;
-	background-color: white;
-	opacity: 0.8;
-      }
-      #messages, #chat-users {
-	border: 1px solid #000;
-	height: 130px;
-	overflow: auto;
-	padding: 3px;
-      }
-      #input-box {
-	line-height: 15px;
-	padding-top: 5px;
-	padding-bottom: 0px;
-      }
-      #input-form {
-	margin: 0px;
-      }
-      #send-message {
-	width: 6.382978723404255%;
-      }
-      .time {
-	color: #17A333;
-      }
-      .user {
-	color: blue;
-      }
-      .message {
-	color: black;
-      }
-    </style>
+    <link rel="stylesheet" href="css/home.css">
   </head>
   <body>
     <div class="container-fluid">
