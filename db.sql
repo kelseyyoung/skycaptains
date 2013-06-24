@@ -12,3 +12,10 @@ create table games (
   winner VARCHAR(20),
   completed DATETIME DEFAULT NULL
 );
+
+create table messages (
+  message_id INT(10) AUTO_INCREMENT PRIMARY KEY,
+  user VARCHAR(20),
+  message_time TIMESTAMP,
+  message TEXT
+);

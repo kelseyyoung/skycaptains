@@ -211,7 +211,7 @@ class SkyCaptainsClient(WampClientProtocol):
 	  "type": "game over", "winner": self.games[game_id].get_winner()})
 	#Delete game from games
 	del self.games[game_id]
-  
+
 #SkyCaptains Server
 class SkyCaptainsServer(WampServerProtocol):
 
@@ -220,6 +220,8 @@ class SkyCaptainsServer(WampServerProtocol):
     self.registerForPubSub("http://skycaptains.com/game")
     #Game events
     self.registerForPubSub("http://skycaptains.com/event#", True)
+    #Chat
+    self.registerForPubSub("http://skycaptains.com/chat")
 
 
 if __name__ == "__main__":

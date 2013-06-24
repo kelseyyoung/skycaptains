@@ -37,6 +37,55 @@
       .online {
 	color: green;
       }
+      #chat-bar {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+      }
+      #chat-box-trigger {
+	border: 1px solid #000;
+	background-color: white;
+	color: black;
+	margin-left: 0px;
+      }
+      #chat-box-trigger:hover {
+	background-color: #999;
+	cursor: pointer;
+      }
+      #chat-box {
+	margin-left: 0px;
+	height: 180px;
+	color: black;
+	padding: 3px;
+	background-color: white;
+	opacity: 0.8;
+      }
+      #messages, #chat-users {
+	border: 1px solid #000;
+	height: 130px;
+	overflow: auto;
+	padding: 3px;
+      }
+      #input-box {
+	line-height: 15px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+      }
+      #input-form {
+	margin: 0px;
+      }
+      #send-message {
+	width: 6.382978723404255%;
+      }
+      .time {
+	color: #17A333;
+      }
+      .user {
+	color: blue;
+      }
+      .message {
+	color: black;
+      }
     </style>
   </head>
   <body>
@@ -161,59 +210,144 @@
 	  </table>
 	</div>
       </div>
-      <div class="row-fluid">
-	<div class="span12">
-	  <div class="navbar navbar-fixed-bottom pull-right">
-	    <ul class="nav pull-right">
-	      <li class="dropup"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		<span class="online"><i class="icon-circle"></i></span>&nbsp; SkyCaptains Chat</a>
-		<ul id="chat-users" class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-		<?php
-		  $s = $db->prepare("select * from users where loggedin=TRUE");
-		  $s->execute();
-		  $rows = $s->fetchAll();
-		  foreach($rows as $row) {
-		    if ($row['username'] != $_SESSION['username']) {
-		?>
-		  <li><a href="#"><span class="online"><i class="icon-circle"></i></span>&nbsp; <?php echo $row["username"]; ?></a></li>
-		<?php } } ?>
-		</ul>
-	      </li>
-	    </ul>
+      <div class="row-fluid" id="chat-bar">
+	<div class="hide span12" id="chat-box">
+	  <div class="row-fluid">
+	    <div class="span9" id="messages">
+	    <?php
+	      //Get messages from last 5 minutes
+	      $s = $db->prepare("select * from messages where message_time >= date_sub(utc_timestamp(), interval 5 minute)");
+	      $s->execute();
+	      $rows = $s->fetchAll();
+	      foreach ($rows as $row) {
+		$u = $row['user'];
+		$t = $row['message_time'];
+		$m = $row['message'];
+	    ?>
+	      <span class="time"><?php echo $t; ?> </span>
+	      <span class="user">[<?php echo $u; ?>] </span>
+	      <span class="message"><?php echo $m ?></span>
+	      <br />
+	    <?php } ?>
+	    </div>
+	    <div class="span3" id="chat-users">
+	      <strong>Online Users</strong><br/>
+	      <?php
+		//Get logged in users
+		$s = $db->prepare("select username from users where loggedin=TRUE order by username asc");
+		$s->execute();
+		$rows = $s->fetchAll();
+		foreach($rows as $row) {
+		  if ($row['username'] != $_SESSION['username']) {
+	      ?>
+		<span class='online'><i class='icon-circle'></i></span>&nbsp; <?php echo $row['username']; ?><br />
+	      <?php } } ?>
+	    </div>
 	  </div>
+	  <div class="row-fluid">
+	    <div class="span12" id="input-box">
+	      <form class="form-inline" id="input-form">
+		<input type="text" class="span11" id="message" placeholder="Press Enter to send" />
+		<button type="submit" class="btn" id="send-message">Send</button>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+	<div class="span12 text-center" id="chat-box-trigger">
+	  <p><strong>SkyCaptains Chat</strong></p>
 	</div>
       </div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
     <script type="text/javascript">
+
+      var sess = null;
+      var me = "<?php echo $_SESSION['username']; ?>";
       
       function updateUsers() {
 	var chat = $("#chat-users");
-	$(chat).empty();
 	var me = "<?php echo $_SESSION['username']; ?>";
 	$.get("getusers.php", {}, function(data) {
 	  data = $.parseJSON(data);
+	  $(chat).empty();
+	  $(chat).append('<strong>Online Users</strong><br/>');
 	  for (var i = 0; i < data.length; i++) {
 	    var user = data[i];
 	    if (user[0] != me) {
-	      $(chat).append("<li><a href='#'>" +
-		"<span class='online'><i class='icon-circle'>" +
-		"</i></span>&nbsp; " + user[0] + "</a></li>");
+	      $(chat).append("<span class='online'><i class='icon-circle'>" +
+		"</i></span>&nbsp; " + user[0] + "<br />");
 	    }
 	  }
 	});
       }
 
+      function messageReceived(topicUri, event) {
+	var m = event["message"];
+	var t = event["time"];
+	var u = event["from"];
+	$("#messages").append('' +
+	      '<span class="time">' + t + ' </span>' +
+	      '<span class="user">[' + u + '] </span>' +
+	      '<span class="message">' + m + '</span><br />');
+      }
+
       $(document).ready(function() {
+
+	$("#chat-box-trigger").click(function() {
+	  $("#chat-box").slideToggle();
+	});
+	//Websocket
+	var wsuri = "ws://localhost:9000";
+	ab.connect(wsuri,
+	  function(session) {
+	    console.log("connected");
+	    sess = session;
+	    sess.subscribe("http://skycaptains.com/chat", messageReceived);
+	  },
+	  function(code, reason) {
+	    //Connection lost
+	    console.log("connection lost");
+	    $("#messages").append(
+	    "The chat server could not be reached. Please try again later.<br />");
+	    //Disable input
+	    $("#message").attr("disabled", "disabled");
+	    sess = null;
+	  }
+	);
+
 	//Update logged in users every 8 seconds
 	setInterval(updateUsers, 8000);
 
-	//Prevent blank submission
+	//Prevent blank submission for game requests
 	$("#challenge-form").submit(function() {
 	  if ($("#username").val() == "") {
 	    return false;
 	  }
+	});
+
+	$("#input-form").submit(function() {
+	  //send message via websockets
+	  var m = $("#message").val();
+	  if (sess && m != "") {
+	    var time = new Date().toISOString().replace("T", " ");
+	    time = time.substring(0, time.length - 5);
+	    sess.publish("http://skycaptains.com/chat",
+	    {"from" : me,
+	    "time" : time,
+	    "message" : m});
+	    //send message to db
+	    $.post("sendmessage.php", {"from" : me, "time" : time, "message": m}, function() { });
+	    //add message to messages div
+	    $("#messages").append('' +
+	      '<span class="time">' + time + ' </span>' +
+	      '<span class="user">[' + me + '] </span>' +
+	      '<span class="message">' + m + '</span><br />');
+	    //Clear old message
+	    $("#message").val("");
+	  }
+	  return false;
 	});
       });
     </script>
