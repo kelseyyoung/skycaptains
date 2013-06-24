@@ -322,7 +322,8 @@
 
 	//Prevent blank submission for game requests
 	$("#challenge-form").submit(function() {
-	  if ($("#username").val() == "") {
+	  //Can't challenge empty and can't challenge yourself
+	  if ($("#username").val() == "" || $("#username").val() == me) {
 	    return false;
 	  }
 	});

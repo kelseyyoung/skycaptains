@@ -140,12 +140,12 @@
 	    clearTimeout(medTimeout)
 	    //Player 1 records game;
 	    $.post("php/recordgame.php", {"id" : uuid, "winner" : event["winner"]}, function(data) {
-	      console.log(data);
+	      sess.publish("http://skycaptains.com/event#" + uuid, {"to" : "client", "id" : uuid, "type" : "redirect"});
 	      window.location = "home.php";
 	    });
-	  } else {
-	    window.location = "home.php";
 	  }
+	} else if (event["type"] && event["type"] == "redirect") {
+	  window.location = "home.php";
 	} else {
 	  render(event);
 	}
