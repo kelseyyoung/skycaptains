@@ -5,7 +5,6 @@
     header('Location: ../index.php');
   }
 
-  $db = new PDO("mysql:host=".$dbhost.";dbname=".$dbname, $dbuser, $dbpassword);
   $error = array();
   $game = $_GET['game'];
   $s = $db->prepare("delete from games where uuid=:uuid");

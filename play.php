@@ -5,7 +5,6 @@
     header('Location: index.php');
   }
 
-  $db = new PDO("mysql:host=".$dbhost.";dbname=".$dbname, $dbuser, $dbpassword);
   $s = $db->prepare('select * from games where uuid=:uuid');
   $s->execute(array(":uuid" => $_GET['game']));
   $game = $s->fetch();

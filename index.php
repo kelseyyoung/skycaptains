@@ -6,7 +6,6 @@
   }
   $error = array();
   if (isset($_POST['username'])) {
-    $db = new PDO("mysql:host=" . $dbhost . ";dbname=" . $dbname, $dbuser, $dbpassword);
 
     $s = $db->prepare('select * from users where username=:username');
     $s->execute(array(':username' => $_POST['username']));

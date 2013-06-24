@@ -7,6 +7,8 @@
 
   $title = "SkyCaptains";
 
+  $db = new PDO("mysql:host=".$dbhost.";dbname=".$dbname, $dbuser, $dbpassword);
+
   date_default_timezone_set('America/Phoenix');
 
   function generate_salt($length = 32) {

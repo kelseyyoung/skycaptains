@@ -4,7 +4,6 @@
   $error = array();
   
   if (isset($_POST['username'])) {
-    $db = new PDO("mysql:host=" . $dbhost . ";dbname=" . $dbname, $dbuser, $dbpassword);
 
     //See if username is taken
     $s = $db->prepare('select * from users where username=:username');

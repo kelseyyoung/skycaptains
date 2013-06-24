@@ -5,7 +5,6 @@
 
     $id = $_POST['id'];
     $winner = $_POST['winner'];
-    $db = new PDO("mysql:host=".$dbhost.";dbname=".$dbname, $dbuser, $dbpassword);
     $s = $db->prepare("select * from games where uuid=:id");
     $s->execute(array(":id" => $id));
     $row = $s->fetch();

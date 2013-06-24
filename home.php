@@ -5,7 +5,6 @@
     header('Location: index.php');
   }
   
-  $db = new PDO("mysql:host=".$dbhost.";dbname=".$dbname, $dbuser, $dbpassword);
   $error = array();
   if (isset($_POST['username'])) {
     //Make sure user exists
@@ -176,7 +175,7 @@
       </div>
       <div class="row-fluid">
 	<div class="span12">
-	  <h3>Completed Games</h3>
+	  <h3>Completed Games [Last 15 Played]</h3>
 	  <table class="table">
 	    <thead>
 	      <tr>
@@ -188,7 +187,8 @@
 	    <tbody>
 	    <?php
 	      //Get all completed games
-	      $s = $db->prepare('select * from games where (user1=:username or user2=:username) and winner is not null order by completed desc');
+	      //Limit 15
+	      $s = $db->prepare('select * from games where (user1=:username or user2=:username) and winner is not null order by completed desc limit 15');
 	      $s->execute(array(":username" => $_SESSION['username']));
 	      $rows = $s->fetchAll();
 	      foreach($rows as $row) {
