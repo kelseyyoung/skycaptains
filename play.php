@@ -1,6 +1,6 @@
 <?php 
   session_start();
-  require_once('variables.php');
+  require_once('php/variables.php');
   if (!isset($_SESSION['username'])) {
     header('Location: index.php');
   }
@@ -139,10 +139,13 @@
 	    clearInterval(updateInterval);
 	    clearTimeout(medTimeout)
 	    //Player 1 records game;
-	    $.post("recordgame.php", {"id" : uuid, "winner" : event["winner"]}, function(data) {
+	    $.post("php/recordgame.php", {"id" : uuid, "winner" : event["winner"]}, function(data) {
+	      console.log(data);
+	      window.location = "home.php";
 	    });
+	  } else {
+	    window.location = "home.php";
 	  }
-	  window.location = "home.php";
 	} else {
 	  render(event);
 	}

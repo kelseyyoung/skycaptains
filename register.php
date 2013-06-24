@@ -1,6 +1,6 @@
 <?php
   session_start();
-  require_once("variables.php");
+  require_once("php/variables.php");
   $error = array();
   
   if (isset($_POST['username'])) {

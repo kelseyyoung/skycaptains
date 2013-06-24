@@ -1,6 +1,6 @@
 <?php
   session_start();
-  require_once('variables.php');
+  require_once('php/variables.php');
   if (!isset($_SESSION['username'])) {
     header('Location: index.php');
   }
@@ -91,7 +91,7 @@
   <body>
     <div class="container-fluid">
       <div class="row-fluid">
-	<a class="btn btn-danger pull-right" href="logout.php">Logout</a>
+	<a class="btn btn-danger pull-right" href="php/logout.php">Logout</a>
       </div>
       <div class="row-fluid">
 	<div class="span7">
@@ -134,7 +134,7 @@
 		<td><?php echo $row['user1']; ?></td>
 		<td>
 		  <a type="button" class="btn" href="play.php?game=<?php echo $row['uuid']; ?>">Play</a>
-		  <a type="button" class="btn btn-danger" href="deletegame.php?game=<?php echo $row["uuid"]; ?>">Decline</a>
+		  <a type="button" class="btn btn-danger" href="php/deletegame.php?game=<?php echo $row["uuid"]; ?>">Decline</a>
 		</td>
 	      </tr>
 	    <?php
@@ -164,7 +164,7 @@
 		<td><?php echo $row['user2']; ?></td>
 		<td>
 		  <a type="button" class="btn" href="play.php?game=<?php echo $row['uuid']; ?>">Play</a>
-		  <a type="button" class="btn btn-danger" href="deletegame.php?game=<?php echo $row['uuid']; ?>">Delete</a>
+		  <a type="button" class="btn btn-danger" href="php/deletegame.php?game=<?php echo $row['uuid']; ?>">Delete</a>
 		</td>
 	      </tr>
 	    <?php
@@ -247,7 +247,7 @@
 	  <div class="row-fluid">
 	    <div class="span12" id="input-box">
 	      <form class="form-inline" id="input-form">
-		<input type="text" class="span11" id="message" placeholder="Press Enter to send" />
+		<input type="text" class="span11" id="message" autocomplete="off" placeholder="Press Enter to send" />
 		<button type="submit" class="btn" id="send-message">Send</button>
 	      </form>
 	    </div>
@@ -269,7 +269,7 @@
       function updateUsers() {
 	var chat = $("#chat-users");
 	var me = "<?php echo $_SESSION['username']; ?>";
-	$.get("getusers.php", {}, function(data) {
+	$.get("php/getusers.php", {}, function(data) {
 	  data = $.parseJSON(data);
 	  $(chat).empty();
 	  $(chat).append('<strong>Online Users</strong><br/>');
@@ -338,7 +338,7 @@
 	    "time" : time,
 	    "message" : m});
 	    //send message to db
-	    $.post("sendmessage.php", {"from" : me, "time" : time, "message": m}, function() { });
+	    $.post("php/sendmessage.php", {"from" : me, "time" : time, "message": m}, function() { });
 	    //add message to messages div
 	    $("#messages").append('' +
 	      '<span class="time">' + time + ' </span>' +
