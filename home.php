@@ -61,6 +61,11 @@
 	</div>
       </div>
       <div class="row-fluid">
+	<div class="alert alert-error hide" id="game-server-error">
+	  <p>The game server could not be reached. Please try again later.</p>
+	</div>
+      </div>
+      <div class="row-fluid">
 	<div class="span6">
 	  <h3>Game Requests</h3>
 	  <table class="table table-hover">
@@ -262,6 +267,8 @@
 	    "The chat server could not be reached. Please try again later.<br />");
 	    //Disable input
 	    $("#message").attr("disabled", "disabled");
+	    //Show game server error
+	    $("#game-server-error").show();
 	    sess = null;
 	  }
 	);
