@@ -12,7 +12,7 @@ To Run
 -Place the directory in a server root<br />
 -Get a database running (see sql/db.sql for details)<br />
 -variables.bash & php/variables.php must be modified with your local variables<br />
--`source variables.bash`
+-`source variables.bash`<br />
 -Start the autobahn server with `python python/server.py`<br />
 
 Demo
