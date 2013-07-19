@@ -226,12 +226,12 @@ class SkyCaptainsServer(WampServerProtocol):
 
 
 if __name__ == "__main__":
-  factory = WampServerFactory("ws://localhost:9000", debugWamp = False)
+  factory = WampServerFactory("ws://173.254.39.110:9000", debugWamp = False)
   factory.protocol = SkyCaptainsServer
   factory.setProtocolOptions(allowHixie76 = True)
   listenWS(factory)
 
-  factory = WampClientFactory("ws://localhost:9000", debugWamp = False)
+  factory = WampClientFactory("ws://173.254.39.110:9000", debugWamp = False)
   factory.protocol = SkyCaptainsClient
   connectWS(factory)
 

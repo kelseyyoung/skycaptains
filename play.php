@@ -45,12 +45,12 @@
 	</div>
       </div>
       <div class="row hide" id="canvas-row">
-	<div id="canvas-wrap" class="span12">
+	<div id="canvas-wrap" class="span12 text-center">
 	  <canvas id="canvas" height="500" width="940"></canvas>
 	</div>
       </div>
       <div class="row hide" id="score-row">
-	<div class="span12">
+	<div class="span12 text-center">
 	  <div class="row">
 	    <div class="span4" style="text-align: left;">
 	      <div id="plane-1-health" class="progress progress-success">
@@ -319,7 +319,7 @@
       medicine.src = medicineImg;
 
       //Set up websocket
-      var wsuri = "ws://localhost:9000";
+      var wsuri = "ws://173.254.39.110:9000";
       ab.connect(wsuri,
 	function(session) {
 	  //Session established
@@ -329,7 +329,7 @@
 	}, 
 	function (code, reason) {
 	  //Connection lost
-	  window.location("home.php");
+	  window.location.href = "home.php";
 	  sess = null;
 	}
       );

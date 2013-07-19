@@ -18,8 +18,10 @@
     }
     if ($pass) {
       //Create new game
-      $db->exec('insert into games(user1, user2, uuid, winner) values("'.$_SESSION['username'].'","'.$_POST['username'].'","'. microtime(true)*10000 .'", NULL)');
+      $db->exec('insert into games(user1, user2, uuid, winner) values("'.$_SESSION['username'].'","'.$_POST['username'].'","'. uniqid() .'", NULL)');
     }
+    //Redirect to prevent form resubmission
+    header('Location: home.php');
   }
 ?>
 <!doctype html>
@@ -216,7 +218,7 @@
       function updateUsers() {
 	var chat = $("#chat-users");
 	var me = "<?php echo $_SESSION['username']; ?>";
-	$.get("php/getusers.php", {}, function(data) {
+	$.get("php/users.php", {}, function(data) {
 	  data = $.parseJSON(data);
 	  $(chat).empty();
 	  $(chat).append('<strong>Online Users</strong><br/>');
@@ -246,7 +248,7 @@
 	  $("#chat-box").slideToggle();
 	});
 	//Websocket
-	var wsuri = "ws://localhost:9000";
+	var wsuri = "ws://173.254.39.110:9000";
 	ab.connect(wsuri,
 	  function(session) {
 	    console.log("connected");
