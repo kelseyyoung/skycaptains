@@ -5,6 +5,7 @@ from twisted.internet import reactor
 
 from random import randint
 import json
+import os
 
 #Plane class
 class Plane():
@@ -226,12 +227,13 @@ class SkyCaptainsServer(WampServerProtocol):
 
 
 if __name__ == "__main__":
-  factory = WampServerFactory("ws://173.254.39.110:9000", debugWamp = False)
+  url = "ws://" + os.environ["SKYCAPTAINS_SERVER"] + ":" + os.environ["SKYCAPTAINS_PORT"]
+  factory = WampServerFactory(url, debugWamp = False)
   factory.protocol = SkyCaptainsServer
   factory.setProtocolOptions(allowHixie76 = True)
   listenWS(factory)
 
-  factory = WampClientFactory("ws://173.254.39.110:9000", debugWamp = False)
+  factory = WampClientFactory(url, debugWamp = False)
   factory.protocol = SkyCaptainsClient
   connectWS(factory)
 

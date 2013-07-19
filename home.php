@@ -248,7 +248,7 @@
 	  $("#chat-box").slideToggle();
 	});
 	//Websocket
-	var wsuri = "ws://173.254.39.110:9000";
+	var wsuri = "ws://<?php echo getenv("SKYCAPTAINS_SERVER"); ?>:<?php echo getenv("SKYCAPTAINS_PORT"); ?>";
 	ab.connect(wsuri,
 	  function(session) {
 	    console.log("connected");
