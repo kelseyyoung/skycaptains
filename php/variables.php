@@ -1,5 +1,6 @@
 <?php
   
+  //Variables for skycaptains
   $dbname = "[your db]";
   $dbhost = "[your db host]";
   $dbuser = "[your db user]";

@@ -5,6 +5,7 @@
     header('Location: ../index.php');
   }
 
+  //Delete game from db
   $error = array();
   $game = $_GET['game'];
   $s = $db->prepare("delete from games where uuid=:uuid");

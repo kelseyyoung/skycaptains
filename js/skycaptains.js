@@ -1,3 +1,6 @@
+//Currently unused
+//TODO: remove all of this
+
 //Overwrite array remove
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);

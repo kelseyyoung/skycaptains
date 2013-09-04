@@ -217,9 +217,12 @@
     <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
     <script type="text/javascript">
 
-      var sess = null;
-      var me = "<?php echo $_SESSION['username']; ?>";
+      var sess = null; //Autobahn session
+      var me = "<?php echo $_SESSION['username']; ?>"; //username
       
+      /**
+       * Updates users in chat window
+       */ 
       function updateUsers() {
 	var chat = $("#chat-users");
 	var me = "<?php echo $_SESSION['username']; ?>";
@@ -237,6 +240,12 @@
 	});
       }
 
+      /**
+       * Callback function on websocket message received
+       * Parameters
+       *  topicUri {String} uri the message passed through
+       *  event {Array} array containing message data
+       */
       function messageReceived(topicUri, event) {
 	var m = event["message"];
 	var t = event["time"];
@@ -249,10 +258,12 @@
 
       $(document).ready(function() {
 
+	//Slide chat box
 	$("#chat-box-trigger").click(function() {
 	  $("#chat-box").slideToggle();
 	});
-	//Websocket
+
+	//Websocket connection
 	var wsuri = "ws://<?php echo getenv("SKYCAPTAINS_SERVER"); ?>:<?php echo getenv("SKYCAPTAINS_PORT"); ?>";
 	ab.connect(wsuri,
 	  function(session) {
@@ -291,9 +302,10 @@
 	    var time = new Date().toISOString().replace("T", " ");
 	    time = time.substring(0, time.length - 5);
 	    sess.publish("http://skycaptains.com/chat",
-	    {"from" : me,
-	    "time" : time,
-	    "message" : m});
+	      {"from" : me,
+	      "time" : time,
+	      "message" : m}
+	    );
 	    //send message to db
 	    $.post("php/sendmessage.php", {"from" : me, "time" : time, "message": m}, function() { });
 	    //add message to messages div
@@ -306,7 +318,8 @@
 	  }
 	  return false;
 	});
-      });
+      }); //End document ready
+
     </script>
   </body>
 </html>

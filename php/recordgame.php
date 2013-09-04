@@ -3,6 +3,7 @@
   require_once("variables.php");
   if (isset($_SESSION['username'])) {
 
+    //Record game in db, set winner and loser
     $id = $_POST['id'];
     $winner = $_POST['winner'];
     $s = $db->prepare("select * from games where uuid=:id");
